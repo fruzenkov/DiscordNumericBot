@@ -1,0 +1,2 @@
+# Development tools
+black>=23.0.0 

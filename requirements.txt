@@ -1,0 +1,12 @@
+# Core
+discord.py>=2.3.0
+python-dotenv>=1.0.0
+aiosqlite>=0.19.0
+
+# Logging
+colorlog>=6.7.0
+
+# Optional (для дополнительных функций)
+# aiohttp>=3.8.0  # Для веб-запросов
+# Pillow>=10.0.0  # Для работы с изображениями
+# matplotlib>=3.7.0  # Для графиков статистики 

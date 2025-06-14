@@ -1,0 +1,28 @@
+{
+    "prefix": "!",
+    "sync_commands_on_start": true,
+    "database_path": "data/bot.db",
+    "logs_dir": "logs",
+    "log_level": "INFO",
+    "log_retention_days": 30,
+    "max_log_size_mb": 10,
+    "global_admins": [
+        559751322786725889,
+        557993122869542932,
+        397080555403083778
+    ],
+    "default_language": "ru",
+    "number_formats": [
+        "^\\d+\\.\\s*",
+        "^\\d+\\s*\\|\\|\\s*",
+        "^\\d+\\s*",
+        "^\\d+\\s*-\\s*",
+        "^\\[\\d+\\]\\s*"
+    ],
+    "features": {
+        "auto_save_hosts": true,
+        "multi_language": false,
+        "slash_commands": true,
+        "web_dashboard": false
+    }
+} 

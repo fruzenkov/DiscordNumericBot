@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: discord-numeric-bot
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - TZ=Europe/Moscow  # Измените на свой часовой пояс
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json:ro  # Только чтение
+    networks:
+      - bot-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Опциональный контейнер для резервного копирования
+  backup:
+    image: alpine:latest
+    container_name: bot-backup
+    volumes:
+      - ./data:/data:ro
+      - ./backups:/backups
+    command: |
+      sh -c "
+        while true; do
+          echo 'Creating backup...'
+          tar -czf /backups/backup-$$(date +%Y%m%d-%H%M%S).tar.gz -C /data .
+          echo 'Backup created'
+          # Удаляем старые бэкапы (старше 7 дней)
+          find /backups -name 'backup-*.tar.gz' -mtime +7 -delete
+          # Ждём 24 часа
+          sleep 86400
+        done
+      "
+    restart: unless-stopped
+    depends_on:
+      - bot
+
+networks:
+  bot-network:
+    driver: bridge 
