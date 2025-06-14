@@ -6,13 +6,13 @@
 import discord
 from discord.ext import commands
 import json
-from typing import Any, Dict
 import logging
+import platform
+from datetime import datetime
 
 from ..utils.permissions import requires_permission
-from ..utils.logger import get_logger
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class SettingsCog(commands.Cog, name="Настройки"):
@@ -202,75 +202,51 @@ class SettingsCog(commands.Cog, name="Настройки"):
         
         await ctx.send(embed=embed, file=file)
         
-    @commands.command(name="info", aliases=["инфо", "about"])
-    async def bot_info(self, ctx: commands.Context):
-        """
-        Информация о боте
-        
-        Использование: !info
-        """
+    @commands.command(name="info", aliases=["botinfo", "about"])
+    async def info(self, ctx: commands.Context):
+        """Показать информацию о боте"""
         embed = discord.Embed(
-            title="ℹ️ Discord Numeric Bot",
-            description="Продвинутый бот для нумерации участников в голосовых каналах",
-            color=discord.Color.blue()
+            title=f"Информация о {self.bot.user.name}",
+            description="Продвинутый бот для нумерации участников.",
+            color=discord.Color.green()
         )
-        
-        # Статистика
-        total_users = sum(guild.member_count for guild in self.bot.guilds)
-        
+
+        if self.bot.user.avatar:
+            embed.set_thumbnail(url=self.bot.user.avatar.url)
+
         embed.add_field(
             name="📊 Статистика",
             value=f"**Серверов:** {len(self.bot.guilds)}\n"
-                  f"**Пользователей:** {total_users:,}\n"
-                  f"**Команд:** {len(self.bot.commands)}",
+                  f"**Пользователей:** {len(self.bot.users)}",
+            inline=True
+        )
+
+        uptime = datetime.utcnow() - self.bot.start_time
+        days = uptime.days
+        hours, rem = divmod(uptime.seconds, 3600)
+        minutes, _ = divmod(rem, 60)
+        
+        embed.add_field(
+            name="⏱️ Аптайм",
+            value=f"{days}д {hours}ч {minutes}м",
             inline=True
         )
         
-        # Информация о системе
-        import platform
         embed.add_field(
-            name="💻 Система",
-            value=f"**Python:** {platform.python_version()}\n"
-                  f"**discord.py:** {discord.__version__}\n"
-                  f"**ОС:** {platform.system()}",
-            inline=True
+            name="⚙️ Техническая информация",
+            value=f"**discord.py:** {discord.__version__}\n"
+                  f"**Python:** {platform.python_version()}",
+            inline=False
         )
-        
-        # Время работы
-        if hasattr(self.bot, 'start_time'):
-            uptime = discord.utils.utcnow() - self.bot.start_time
-            hours, remainder = divmod(int(uptime.total_seconds()), 3600)
-            minutes, seconds = divmod(remainder, 60)
-            days, hours = divmod(hours, 24)
-            
-            uptime_str = ""
-            if days:
-                uptime_str += f"{days}д "
-            if hours:
-                uptime_str += f"{hours}ч "
-            if minutes:
-                uptime_str += f"{minutes}м "
-            uptime_str += f"{seconds}с"
-            
-            embed.add_field(
-                name="⏱️ Время работы",
-                value=uptime_str,
-                inline=True
-            )
-            
-        # Ссылки
+
+        repo_url = "https://github.com/fruzenkov/DiscordNumericBot"
         embed.add_field(
-            name="🔗 Ссылки",
-            value="[GitHub](https://github.com/yourusername/DiscordNumericBot) | "
-                  "[Пригласить](https://discord.com/api/oauth2/authorize?client_id=YOUR_BOT_ID&permissions=268435456&scope=bot%20applications.commands) | "
-                  "[Поддержка](https://discord.gg/YOUR_SUPPORT_SERVER)",
+            name="🔗 Ссылка на GitHub",
+            value=f"[Репозиторий]({repo_url})",
             inline=False
         )
         
-        embed.set_footer(
-            text=f"Разработано с ❤️ • v2.0",
-            icon_url=self.bot.user.avatar.url if self.bot.user.avatar else None
-        )
+        embed.set_footer(text=f"Автор: fruzenkov")
         
         await ctx.send(embed=embed)
         
