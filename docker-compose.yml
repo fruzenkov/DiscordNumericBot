@@ -9,6 +9,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
+    user: "1000:1000"
     # Добавляем DNS от Google для стабильного сетевого соединения
     dns:
       - 8.8.8.8
