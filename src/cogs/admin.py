@@ -64,7 +64,7 @@ class AdminCog(commands.Cog, name="Администрирование"):
         else:
             await ctx.send("❌ Ошибка при добавлении пользователя!")
             
-    @commands.command(name="unauthorize", aliases=["unauth", "удалить"])
+    @commands.command(name="unauthorize", aliases=["unauth", "удалить_автор"])
     @requires_admin()
     async def unauthorize_user(self, ctx: commands.Context, member: discord.Member):
         """
